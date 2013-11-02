@@ -1,5 +1,7 @@
-(function() {
-    'use strict';
+/*global document:true, jasmine:true, bespoke:true, describe:true, it:true, expect:true, beforeEach:true, spyOn:true */
+
+(function(global, document, jasmine, bespoke, logbookLogger) {
+    "use strict";
 
     describe("bespoke-logbook", function() {
 
@@ -8,12 +10,12 @@
             deck,
 
             createDeck = function(options) {
-                var parent = document.createElement('article');
+                var parent = document.createElement("article");
 
                 options = options || true;
 
                 for (var i = 0; i < 10; i++) {
-                    parent.appendChild(document.createElement('section'));
+                    parent.appendChild(document.createElement("section"));
                 }
 
                 deck = bespoke.from(parent, {
@@ -22,7 +24,7 @@
             },
 
             replaceLoggerWithSpy = function() {
-                spyOn(logbookLogger, 'log');
+                spyOn(logbookLogger, "log");
             },
 
             customData1 = {
@@ -231,4 +233,4 @@
             });
         });
     });
-}());
+}(this, document, jasmine, bespoke, this.logbookLogger));

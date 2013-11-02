@@ -1,3 +1,5 @@
+/*global bespoke:true */
+
 bespoke.horizontal.from('article', {
-  logbook: true
+    logbook: true
 });
