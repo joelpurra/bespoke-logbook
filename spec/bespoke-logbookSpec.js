@@ -19,6 +19,7 @@
                 }
 
                 deck = bespoke.from(parent, {
+                    convenient: true,
                     logbook: options
                 });
             },

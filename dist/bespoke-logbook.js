@@ -6,8 +6,13 @@
  * This content is released under the MIT license
  */
 
-(function(global, window, bespoke, undefined) {
+(function(global, window, bespoke, convenient, pluginName, undefined) {
     "use strict";
+
+    var tag = "bespoke." + pluginName,
+
+        cv = convenient.builder(pluginName);
+
     // Set up a global, overridable logger object
     global.logbookLogger = global.logbookLogger || {
         log: function() {
@@ -16,36 +21,30 @@
         }
     };
 
-    (function(bespoke, ns, pluginName, logger) {
-        var tag = "bespoke." + pluginName,
+    (function(bespoke, ns, logger) {
+        var defaultEvents = ["activate", "deactivate", "next", "prev", "slide"],
 
-            generateErrorObject = function(message) {
-                return new Error(tag + ": " + message);
+            copyArray = function(arr) {
+                return [].slice.call(arr, 0);
+            },
+
+            // Curry, partial, bind - not sure what
+            bind = function(fn, context) {
+                var args = copyArray(arguments).slice(1);
+                args[0] = context || null;
+
+                var prepared = function() {
+                    var baseAndPrefixedArguments = args.concat(copyArray(arguments)),
+                        bound = Function.prototype.bind.apply(fn, baseAndPrefixedArguments);
+
+                    return bound;
+                };
+
+                return prepared;
             },
 
             plugin = function self(deck, options) {
-                var defaultEvents = ["activate", "deactivate", "next", "prev", "slide"],
-
-                    copyArray = function(arr) {
-                        return [].slice.call(arr, 0);
-                    },
-
-                    // Curry, partial, bind - not sure what
-                    bind = function(fn, context) {
-                        var args = copyArray(arguments).slice(1);
-                        args[0] = context || null;
-
-                        var prepared = function() {
-                            var baseAndPrefixedArguments = args.concat(copyArray(arguments)),
-                                bound = Function.prototype.bind.apply(fn, baseAndPrefixedArguments);
-
-                            return bound;
-                        };
-
-                        return prepared;
-                    },
-
-                    createBaseLogger = bind(logger.log),
+                var createBaseLogger = bind(logger.log),
 
                     log = createBaseLogger(tag),
 
@@ -69,7 +68,7 @@
                         }
 
                         if (!(eventLoggingOverride instanceof Function || eventLoggingOverride instanceof String || eventLoggingOverride === ("" + eventLoggingOverride))) {
-                            throw generateErrorObject("The override must be `false`, a function or a string.");
+                            throw cv.generateErrorObject("The override must be `false`, a function or a string.");
                         }
 
                         if (eventLoggingOverride instanceof String || eventLoggingOverride === ("" + eventLoggingOverride)) {
@@ -111,7 +110,7 @@
 
                     injectProxy = function(name) {
                         if (deck[name] === proxy[name]) {
-                            throw generateErrorObject("The deck's `" + name + "` has already been overridden.");
+                            throw cv.generateErrorObject("The deck's `" + name + "` has already been overridden.");
                         }
 
                         deck.original[name] = deck[name];
@@ -120,7 +119,7 @@
 
                     deProxy = function(name) {
                         if (deck[name] !== proxy[name]) {
-                            throw generateErrorObject("The deck's overridden `" + name + "` function has changed - de-proxying will break the proxy chain.");
+                            throw cv.generateErrorObject("The deck's overridden `" + name + "` function has changed - de-proxying will break the proxy chain.");
                         }
 
                         deck[name] = deck.original[name];
@@ -203,9 +202,9 @@
             };
 
         if (ns[pluginName] !== undefined) {
-            throw generateErrorObject("The " + pluginName + " plugin has already been loaded.");
+            throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded.");
         }
 
         ns[pluginName] = plugin;
-    }(bespoke, bespoke.plugins, "logbook", global.logbookLogger));
-}(this, window, bespoke));
+    }(bespoke, bespoke.plugins, global.logbookLogger));
+}(this, window, bespoke, bespoke.plugins.convenient, "logbook"));

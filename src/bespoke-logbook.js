@@ -1,13 +1,11 @@
 /*global window:true, bespoke:true */
 
-(function(global, window, bespoke, pluginName, undefined) {
+(function(global, window, bespoke, convenient, pluginName, undefined) {
     "use strict";
 
     var tag = "bespoke." + pluginName,
 
-        generateErrorObject = function(message) {
-            return new Error(tag + ": " + message);
-        };
+        cv = convenient.builder(pluginName);
 
     // Set up a global, overridable logger object
     global.logbookLogger = global.logbookLogger || {
@@ -64,7 +62,7 @@
                         }
 
                         if (!(eventLoggingOverride instanceof Function || eventLoggingOverride instanceof String || eventLoggingOverride === ("" + eventLoggingOverride))) {
-                            throw generateErrorObject("The override must be `false`, a function or a string.");
+                            throw cv.generateErrorObject("The override must be `false`, a function or a string.");
                         }
 
                         if (eventLoggingOverride instanceof String || eventLoggingOverride === ("" + eventLoggingOverride)) {
@@ -106,7 +104,7 @@
 
                     injectProxy = function(name) {
                         if (deck[name] === proxy[name]) {
-                            throw generateErrorObject("The deck's `" + name + "` has already been overridden.");
+                            throw cv.generateErrorObject("The deck's `" + name + "` has already been overridden.");
                         }
 
                         deck.original[name] = deck[name];
@@ -115,7 +113,7 @@
 
                     deProxy = function(name) {
                         if (deck[name] !== proxy[name]) {
-                            throw generateErrorObject("The deck's overridden `" + name + "` function has changed - de-proxying will break the proxy chain.");
+                            throw cv.generateErrorObject("The deck's overridden `" + name + "` function has changed - de-proxying will break the proxy chain.");
                         }
 
                         deck[name] = deck.original[name];
@@ -198,9 +196,9 @@
             };
 
         if (ns[pluginName] !== undefined) {
-            throw generateErrorObject("The " + pluginName + " plugin has already been loaded.");
+            throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded.");
         }
 
         ns[pluginName] = plugin;
     }(bespoke, bespoke.plugins, global.logbookLogger));
-}(this, window, bespoke, "logbook"));
+}(this, window, bespoke, bespoke.plugins.convenient, "logbook"));
