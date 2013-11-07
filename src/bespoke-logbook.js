@@ -1,7 +1,14 @@
 /*global window:true, bespoke:true */
 
-(function(global, window, bespoke, undefined) {
+(function(global, window, bespoke, pluginName, undefined) {
     "use strict";
+
+    var tag = "bespoke." + pluginName,
+
+        generateErrorObject = function(message) {
+            return new Error(tag + ": " + message);
+        };
+
     // Set up a global, overridable logger object
     global.logbookLogger = global.logbookLogger || {
         log: function() {
@@ -10,36 +17,30 @@
         }
     };
 
-    (function(bespoke, ns, pluginName, logger) {
-        var tag = "bespoke." + pluginName,
+    (function(bespoke, ns, logger) {
+        var defaultEvents = ["activate", "deactivate", "next", "prev", "slide"],
 
-            generateErrorObject = function(message) {
-                return new Error(tag + ": " + message);
+            copyArray = function(arr) {
+                return [].slice.call(arr, 0);
+            },
+
+            // Curry, partial, bind - not sure what
+            bind = function(fn, context) {
+                var args = copyArray(arguments).slice(1);
+                args[0] = context || null;
+
+                var prepared = function() {
+                    var baseAndPrefixedArguments = args.concat(copyArray(arguments)),
+                        bound = Function.prototype.bind.apply(fn, baseAndPrefixedArguments);
+
+                    return bound;
+                };
+
+                return prepared;
             },
 
             plugin = function self(deck, options) {
-                var defaultEvents = ["activate", "deactivate", "next", "prev", "slide"],
-
-                    copyArray = function(arr) {
-                        return [].slice.call(arr, 0);
-                    },
-
-                    // Curry, partial, bind - not sure what
-                    bind = function(fn, context) {
-                        var args = copyArray(arguments).slice(1);
-                        args[0] = context || null;
-
-                        var prepared = function() {
-                            var baseAndPrefixedArguments = args.concat(copyArray(arguments)),
-                                bound = Function.prototype.bind.apply(fn, baseAndPrefixedArguments);
-
-                            return bound;
-                        };
-
-                        return prepared;
-                    },
-
-                    createBaseLogger = bind(logger.log),
+                var createBaseLogger = bind(logger.log),
 
                     log = createBaseLogger(tag),
 
@@ -201,5 +202,5 @@
         }
 
         ns[pluginName] = plugin;
-    }(bespoke, bespoke.plugins, "logbook", global.logbookLogger));
-}(this, window, bespoke));
+    }(bespoke, bespoke.plugins, global.logbookLogger));
+}(this, window, bespoke, "logbook"));
