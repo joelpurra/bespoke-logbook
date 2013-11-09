@@ -19,12 +19,13 @@ Download the [production version][min] or the [development version][max], or use
 
 ## Usage
 
-First, include both `bespoke.js` and `bespoke-logbook.js` in your page.
+First, include `bespoke.js`, `bespoke-convenient.js` and `bespoke-logbook.js` in your page.
 
 Then, simply include the plugin when instantiating your presentation.
 
 ```js
 bespoke.horizontal.from('article', {
+  convenient: true,
   logbook: true
 });
 ```
@@ -68,7 +69,9 @@ bespoke.horizontal.from("article", {
             // An example of a custom event
             "custom1": function() {
                 console.log("Custom logging is so much fun", arguments)
-            }
+            },
+            // An example of a custom event logged with a static string
+            "custom2": "Will only log this string"
         }
     }
 });
@@ -113,6 +116,7 @@ The bespoke-logbook npm package is designed for use with [browserify](http://bro
 
 ```js
 require('bespoke');
+require('bespoke-convenient');
 require('bespoke-logbook');
 ```
 
@@ -132,6 +136,7 @@ require('bespoke-logbook');
 
 Adam Edmond, [addyeddy on flickr](https://secure.flickr.com/photos/addyeddy/), for his photo [Old log book](https://secure.flickr.com/photos/addyeddy/3430320766/) ([CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)).
 
+My best friend, [bespoke-convenient](https://github.com/joelpurra/bespoke-convenient), for continued support - rain and shine. I love you, man.
 
 
 ## License
