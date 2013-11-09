@@ -1,6 +1,6 @@
 /*global document:true, jasmine:true, bespoke:true, describe:true, it:true, expect:true, beforeEach:true, spyOn:true */
 
-(function(global, document, jasmine, bespoke, logbookLogger) {
+(function(global, document, jasmine, bespoke) {
     "use strict";
 
     describe("bespoke-logbook", function() {
@@ -24,8 +24,10 @@
                 });
             },
 
+            internalLogger = global.convenientOptions.logger,
+
             replaceLoggerWithSpy = function() {
-                spyOn(logbookLogger, "log");
+                spyOn(internalLogger, "log");
             },
 
             customData1 = {
@@ -47,27 +49,27 @@
 
             it("should have been logged as a slide", function() {
                 deck.slide(5);
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "slide", jasmine.any(Object));
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "slide", jasmine.any(Object));
             });
 
             it("should have been logged as a next event", function() {
                 deck.next();
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "next", jasmine.any(Object));
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "next", jasmine.any(Object));
             });
 
             it("should have been logged having activated a slide", function() {
                 deck.next();
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "activate", jasmine.any(Object));
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "activate", jasmine.any(Object));
             });
 
             it("should have been logged having deactivated a slide", function() {
                 deck.next();
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "deactivate", jasmine.any(Object));
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "deactivate", jasmine.any(Object));
             });
 
             it("should have been logged as a prev event", function() {
                 deck.prev();
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
             });
 
             it("should not have been logged when replaced", function() {
@@ -76,19 +78,19 @@
                 bespoke.plugins.logbook.override("prev", defaultEventLoggerOverride);
                 deck.prev();
                 expect(defaultEventLoggerOverride).toHaveBeenCalledWith(jasmine.any(Object));
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
             });
 
             it("should not have been logged when deleted", function() {
                 bespoke.plugins.logbook.override("prev", false);
                 deck.prev();
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
             });
 
             it("should have been logged with a plain string", function() {
                 bespoke.plugins.logbook.override("prev", plainLogString);
                 deck.prev();
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, plainLogString);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, plainLogString);
             });
         });
 
@@ -100,20 +102,20 @@
 
             it("should have been logged", function() {
                 deck.fire("custom1");
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fire", "custom1");
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom1");
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fire", "custom1");
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom1");
             });
 
             it("should have been logged with custom data", function() {
                 deck.fire("custom2", customData1);
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fire", "custom2", customData1);
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom2", customData1);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fire", "custom2", customData1);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom2", customData1);
             });
 
             it("should have been logged with multiple custom data", function() {
                 deck.fire("custom3", customData1, customData2);
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fire", "custom3", customData1, customData2);
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom3", customData1, customData2);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fire", "custom3", customData1, customData2);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom3", customData1, customData2);
             });
         });
 
@@ -132,32 +134,32 @@
                 deck.fire("custom");
                 expect(customOverride).toHaveBeenCalledWith("fire", "custom");
                 expect(customOverride).toHaveBeenCalledWith("fired", true, "custom");
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom");
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom");
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
             });
 
             it("should have been logged with custom data", function() {
                 deck.fire("custom", customData1);
                 expect(customOverride).toHaveBeenCalledWith("fire", "custom", customData1);
                 expect(customOverride).toHaveBeenCalledWith("fired", true, "custom", customData1);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1);
             });
 
             it("should have been logged with multiple custom data", function() {
                 deck.fire("custom", customData1, customData2);
                 expect(customOverride).toHaveBeenCalledWith("fire", "custom", customData1, customData2);
                 expect(customOverride).toHaveBeenCalledWith("fired", true, "custom", customData1, customData2);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1, customData2);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1, customData2);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1, customData2);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1, customData2);
             });
 
             it("should have been logged then deleted", function() {
                 deck.fire("custom");
                 expect(customOverride).toHaveBeenCalledWith("fire", "custom");
                 expect(customOverride).toHaveBeenCalledWith("fired", true, "custom");
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom");
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom");
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
                 expect(customOverride.calls.length).toBe(2);
 
                 bespoke.plugins.logbook.override("custom", false);
@@ -169,7 +171,7 @@
                 bespoke.plugins.logbook.override("custom", plainLogString);
                 deck.fire("custom");
                 expect(customOverride).not.toHaveBeenCalled();
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, plainLogString);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, plainLogString);
             });
         });
 
@@ -189,24 +191,24 @@
                 deck.fire("custom");
                 expect(customOverrides.custom).toHaveBeenCalledWith("fire", "custom");
                 expect(customOverrides.custom).toHaveBeenCalledWith("fired", true, "custom");
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom");
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom");
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
             });
 
             it("should have been logged with custom data", function() {
                 deck.fire("custom", customData1);
                 expect(customOverrides.custom).toHaveBeenCalledWith("fire", "custom", customData1);
                 expect(customOverrides.custom).toHaveBeenCalledWith("fired", true, "custom", customData1);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1);
             });
 
             it("should have been logged with multiple custom data", function() {
                 deck.fire("custom", customData1, customData2);
                 expect(customOverrides.custom).toHaveBeenCalledWith("fire", "custom", customData1, customData2);
                 expect(customOverrides.custom).toHaveBeenCalledWith("fired", true, "custom", customData1, customData2);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1, customData2);
-                expect(logbookLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1, customData2);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fire", "custom", customData1, customData2);
+                expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom", customData1, customData2);
             });
         });
 
@@ -217,21 +219,21 @@
             });
 
             it("should have been logged", function() {
-                var callCount = logbookLogger.log.calls.length;
+                var callCount = internalLogger.log.calls.length;
                 deck.fire("custom");
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fire", "custom");
-                expect(logbookLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom");
-                expect(logbookLogger.log.calls.length).toBe(callCount + 2);
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fire", "custom");
+                expect(internalLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom");
+                expect(internalLogger.log.calls.length).toBe(callCount + 2);
                 bespoke.plugins.logbook.disable();
                 deck.fire("custom");
                 deck.fire("custom2");
                 deck.next();
                 deck.prev();
-                expect(logbookLogger.log.calls.length).toBe(callCount + 2);
+                expect(internalLogger.log.calls.length).toBe(callCount + 2);
                 bespoke.plugins.logbook.enable();
                 deck.fire("custom");
-                expect(logbookLogger.log.calls.length).toBe(callCount + 4);
+                expect(internalLogger.log.calls.length).toBe(callCount + 4);
             });
         });
     });
-}(this, document, jasmine, bespoke, this.logbookLogger));
+}(this, document, jasmine, bespoke));
