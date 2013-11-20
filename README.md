@@ -147,3 +147,7 @@ When using bespoke-logbook, comply to the [MIT license](http://joelpurra.mit-lic
 
 [bespoke.js]: https://github.com/markdalgleish/bespoke.js
 [default-events]: https://github.com/markdalgleish/bespoke.js#events
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joelpurra/bespoke-logbook/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
