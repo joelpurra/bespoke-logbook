@@ -25,7 +25,6 @@ Then, simply include the plugin when instantiating your presentation.
 
 ```js
 bespoke.horizontal.from('article', {
-  convenient: true,
   logbook: true
 });
 ```

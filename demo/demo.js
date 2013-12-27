@@ -4,7 +4,6 @@
     "use strict";
 
     var deck = bespoke.horizontal.from("article", {
-        convenient: true,
         logbook: true
     });
 
