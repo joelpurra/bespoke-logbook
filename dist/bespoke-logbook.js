@@ -1,5 +1,5 @@
 /*!
- * bespoke-logbook v1.0.0
+ * bespoke-logbook v1.0.1
  * https://github.com/joelpurra/bespoke-logbook
  *
  * Copyright 2013, Joel Purra
