@@ -1,6 +1,15 @@
-/*global document:true, jasmine:true, bespoke:true, describe:true, it:true, expect:true, beforeEach:true, spyOn:true */
+/*global require:true, document:true, jasmine:true, describe:true, it:true, expect:true, beforeEach:true, runs:true, waitsFor:true, spyOn:true */
 
-(function(global, document, jasmine, bespoke) {
+Function.prototype.bind = Function.prototype.bind || require("function-bind");
+
+var bespoke = require("bespoke"),
+    convenient = require("bespoke-convenient"),
+    logbook = require("../../lib-instrumented/bespoke-logbook.js"),
+    browserGlobal = (function(f) {
+        return f("return this")();
+    }(Function));
+
+(function(browserGlobal, document, jasmine, bespoke) {
     "use strict";
 
     describe("bespoke-logbook", function() {
@@ -12,18 +21,16 @@
             createDeck = function(options) {
                 var parent = document.createElement("article");
 
-                options = options || true;
-
                 for (var i = 0; i < 10; i++) {
                     parent.appendChild(document.createElement("section"));
                 }
 
-                deck = bespoke.from(parent, {
-                    logbook: options
-                });
+                deck = bespoke.from(parent, [
+                    logbook(options)
+                ]);
             },
 
-            internalLogger = global.convenientOptions.logger,
+            internalLogger = browserGlobal.convenientOptions.logger,
 
             replaceLoggerWithSpy = function() {
                 spyOn(internalLogger, "log");
@@ -74,20 +81,20 @@
             it("should not have been logged when replaced", function() {
                 var defaultEventLoggerOverride = jasmine.createSpy("defaultEventLoggerOverride");
 
-                bespoke.plugins.logbook.override("prev", defaultEventLoggerOverride);
+                logbook.override("prev", defaultEventLoggerOverride);
                 deck.prev();
                 expect(defaultEventLoggerOverride).toHaveBeenCalledWith(jasmine.any(Object));
                 expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
             });
 
             it("should not have been logged when deleted", function() {
-                bespoke.plugins.logbook.override("prev", false);
+                logbook.override("prev", false);
                 deck.prev();
                 expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "prev", jasmine.any(Object));
             });
 
             it("should have been logged with a plain string", function() {
-                bespoke.plugins.logbook.override("prev", plainLogString);
+                logbook.override("prev", plainLogString);
                 deck.prev();
                 expect(internalLogger.log).toHaveBeenCalledWith(tag, plainLogString);
             });
@@ -126,7 +133,7 @@
                 createDeck();
 
                 customOverride = jasmine.createSpy("custom");
-                bespoke.plugins.logbook.override("custom", customOverride);
+                logbook.override("custom", customOverride);
             });
 
             it("should have been logged", function() {
@@ -161,13 +168,13 @@
                 expect(internalLogger.log).not.toHaveBeenCalledWith(tag, "fired", true, "custom");
                 expect(customOverride.calls.length).toBe(2);
 
-                bespoke.plugins.logbook.override("custom", false);
+                logbook.override("custom", false);
                 deck.fire("custom");
                 expect(customOverride.calls.length).toBe(2);
             });
 
             it("should have been logged with a plain string", function() {
-                bespoke.plugins.logbook.override("custom", plainLogString);
+                logbook.override("custom", plainLogString);
                 deck.fire("custom");
                 expect(customOverride).not.toHaveBeenCalled();
                 expect(internalLogger.log).toHaveBeenCalledWith(tag, plainLogString);
@@ -223,16 +230,16 @@
                 expect(internalLogger.log).toHaveBeenCalledWith(tag, "fire", "custom");
                 expect(internalLogger.log).toHaveBeenCalledWith(tag, "fired", true, "custom");
                 expect(internalLogger.log.calls.length).toBe(callCount + 2);
-                bespoke.plugins.logbook.disable();
+                logbook.disable();
                 deck.fire("custom");
                 deck.fire("custom2");
                 deck.next();
                 deck.prev();
                 expect(internalLogger.log.calls.length).toBe(callCount + 2);
-                bespoke.plugins.logbook.enable();
+                logbook.enable();
                 deck.fire("custom");
                 expect(internalLogger.log.calls.length).toBe(callCount + 4);
             });
         });
     });
-}(this, document, jasmine, bespoke));
+}(browserGlobal, document, jasmine, bespoke));

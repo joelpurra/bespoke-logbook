@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/joelpurra/bespoke-logbook.png?branch=master)](https://travis-ci.org/joelpurra/bespoke-logbook)
+[![Build Status](https://secure.travis-ci.org/joelpurra/bespoke-logbook.png?branch=master)](https://travis-ci.org/joelpurra/bespoke-logbook) [![Coverage Status](https://coveralls.io/repos/joelpurra/bespoke-logbook/badge.png)](https://coveralls.io/r/joelpurra/bespoke-logbook)
 
 # [bespoke-logbook](https://github.com/joelpurra/bespoke-logbook)
 
@@ -19,14 +19,25 @@ Download the [production version][min] or the [development version][max], or use
 
 ## Usage
 
-First, include `bespoke.js`, `bespoke-convenient.js` and `bespoke-logbook.js` in your page.
+This plugin is shipped in a [UMD format](https://github.com/umdjs/umd), meaning that it is available as a CommonJS/AMD module or browser global.
 
-Then, simply include the plugin when instantiating your presentation.
+For example, when using CommonJS modules:
 
 ```js
-bespoke.horizontal.from('article', {
-  logbook: true
-});
+var bespoke = require('bespoke'),
+  logbook = require('bespoke-logbook');
+
+bespoke.from('#presentation', [
+  logbook()
+]);
+```
+
+When using browser globals:
+
+```js
+bespoke.from('#presentation', [
+  bespoke.plugins.logbook()
+]);
 ```
 
 ### Overriding event logging
@@ -96,14 +107,7 @@ bespoke.plugins.logbook.enable();
 // logbook is back once again, with the ill behaviour
 ```
 
-
 ## Package managers
-
-### Bower
-
-```bash
-$ bower install bespoke-logbook
-```
 
 ### npm
 
@@ -111,12 +115,10 @@ $ bower install bespoke-logbook
 $ npm install bespoke-logbook
 ```
 
-The bespoke-logbook npm package is designed for use with [browserify](http://browserify.org/), e.g.
+### Bower
 
-```js
-require('bespoke');
-require('bespoke-convenient');
-require('bespoke-logbook');
+```bash
+$ bower install bespoke-logbook
 ```
 
 
@@ -140,13 +142,9 @@ My best friend, [bespoke-convenient](https://github.com/joelpurra/bespoke-conven
 
 ## License
 
-Copyright (c) 2013, [Joel Purra](http://joelpurra.com/) All rights reserved.
+Copyright (c) 2013, 2014, [Joel Purra](http://joelpurra.com/) All rights reserved.
 
-When using bespoke-logbook, comply to the [MIT license](http://joelpurra.mit-license.org/2013). Please see the LICENSE file for details, and the [MIT License on Wikipedia](http://en.wikipedia.org/wiki/MIT_License).
+When using bespoke-logbook, comply to the [MIT license](http://joelpurra.mit-license.org/2013-2014). Please see the LICENSE file for details, and the [MIT License on Wikipedia](http://en.wikipedia.org/wiki/MIT_License).
 
 [bespoke.js]: https://github.com/markdalgleish/bespoke.js
 [default-events]: https://github.com/markdalgleish/bespoke.js#events
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joelpurra/bespoke-logbook/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

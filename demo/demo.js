@@ -1,22 +1,28 @@
-/*global document:true, bespoke:true */
+/*global document:true, console:true, bespoke:true */
 
-(function(document, bespoke) {
+(function(bespoke) {
     "use strict";
 
-    var deck = bespoke.horizontal.from("article", {
-        logbook: true
-    });
+    // Keep a reference to the deck for the fake plugin below.
+    var deck = bespoke.from("article", [
+        bespoke.plugins.keys(),
+        bespoke.plugins.touch(),
+        bespoke.plugins.classes(),
+        bespoke.plugins.logbook(),
+    ]);
 
-    var fakePluginButton = document.getElementById("fake-plugin-button");
+    // Fake a plugin with a custom event.
+    (function() {
+        var fakePluginButton = document.getElementById("fake-plugin-button");
 
-    bespoke.plugins.logbook.override("my-custom-plugin-event", function() {
-        console.warn("Warning! You clicked the scary button!", arguments);
-    });
-
-    fakePluginButton.onclick = function() {
-        deck.fire("my-custom-plugin-event", {
-            something: "with extra data"
+        bespoke.plugins.logbook.override("my-custom-plugin-event", function() {
+            console.warn("Warning! You clicked the scary button!", arguments);
         });
-    };
 
-}(document, bespoke));
+        fakePluginButton.onclick = function() {
+            deck.fire("my-custom-plugin-event", {
+                something: "with extra data"
+            });
+        };
+    }());
+}(bespoke));

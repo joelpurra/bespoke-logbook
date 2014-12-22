@@ -1,20 +1,32 @@
 /*!
- * bespoke-logbook v1.0.1
- * https://github.com/joelpurra/bespoke-logbook
+ * bespoke-logbook v2.0.0-alpha.1
  *
- * Copyright 2013, Joel Purra
+ * Copyright 2014, Joel Purra
  * This content is released under the MIT license
+ * http://joelpurra.mit-license.org/2013-2014
  */
 
-(function(bespoke, convenient, ns, pluginName, undefined) {
-    "use strict";
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self);var n=o;n=n.bespoke||(n.bespoke={}),n=n.plugins||(n.plugins={}),n.logbook=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+/*global require:true, module:true */
 
-    var cv = convenient.builder(pluginName),
+"use strict";
 
-        defaultEvents = ["activate", "deactivate", "next", "prev", "slide"],
+var pluginName = "logbook",
+    // Hack to get around having to write all browser code with require().
+    browserGlobal = (function(f) {
+        return f("return this")();
+    }(Function)),
+    convenient = ((browserGlobal.bespoke && browserGlobal.bespoke.plugins && browserGlobal.bespoke.plugins.convenient) || _dereq_("bespoke-convenient")),
+    cv = convenient.builder(pluginName),
 
-        plugin = function self(deck, options) {
-            var createPrefixedLogger = Function.prototype.bind.bind(cv.log, cv.log.bind),
+    defaultEvents = ["activate", "deactivate", "next", "prev", "slide"],
+
+    plugin = function self(options) {
+        var decker = function(deck) {
+            // TODO: unse cvBoundToDeck.log instead of cv.log?
+            var cvBoundToDeck = cv.activateDeck(deck),
+
+                createPrefixedLogger = Function.prototype.bind.bind(cv.log, cv.log.bind),
 
                 stringLoggingOverride = function(str) {
                     var fn = function() {
@@ -52,7 +64,7 @@
                     var dynamicLogger = function() {
                         var eventLogger = getEventLogger(eventName);
 
-                        eventLogger.apply(null, cv.copyArray(arguments));
+                        eventLogger.apply(null, convenient.copyArray(arguments));
                     };
 
                     return dynamicLogger;
@@ -62,7 +74,7 @@
                     fire: function(eventName) {
                         var eventLogger = getEventLogger(eventName),
                             result,
-                            args = cv.copyArray(arguments);
+                            args = convenient.copyArray(arguments);
 
                         eventLogger.apply(null, ["fire"].concat(args));
 
@@ -126,14 +138,8 @@
 
                 prepareOptions = function() {
                     // TODO: merge function?
-                    options = options !== true ? options : {};
+                    options = options || {};
                     options.overrides = options.overrides || {};
-                },
-
-                exportApi = function() {
-                    self.enable = enable.bind(this);
-                    self.disable = disable.bind(this);
-                    self.override = override.bind(this);
                 },
 
                 enable = function() {
@@ -152,6 +158,12 @@
                     delete deck.original;
                 },
 
+                exportApi = function() {
+                    self.enable = enable.bind(this);
+                    self.disable = disable.bind(this);
+                    self.override = override.bind(this);
+                },
+
                 init = function() {
                     prepareOptions();
 
@@ -167,9 +179,11 @@
             init();
         };
 
-    if (ns[pluginName] !== undefined) {
-        throw cv.generateErrorObject("The " + pluginName + " plugin has already been loaded.");
-    }
+        return decker;
+    };
 
-    ns[pluginName] = plugin;
-}(bespoke, bespoke.plugins.convenient, bespoke.plugins, "logbook"));
+module.exports = plugin;
+
+},{}]},{},[1])
+(1)
+});
