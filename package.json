@@ -1,6 +1,6 @@
 {
     "name": "bespoke-logbook",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Log Bespoke.js events and state to the console",
     "homepage": "https://github.com/joelpurra/bespoke-logbook",
     "bugs": "https://github.com/joelpurra/bespoke-logbook/issues",
@@ -46,7 +46,8 @@
         "lodash": "^2.4.1",
         "vinyl-buffer": "0.0.0",
         "vinyl-map": "^1.0.1",
-        "vinyl-source-stream": "^0.1.1"
+        "vinyl-source-stream": "^0.1.1",
+        "bespoke-convenient": "^1.0.0"
     },
     "engines": {
         "node": ">=0.10.0"
