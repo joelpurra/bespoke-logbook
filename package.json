@@ -1,6 +1,6 @@
 {
     "name": "bespoke-logbook",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0",
     "description": "Log Bespoke.js events and state to the console",
     "homepage": "https://github.com/joelpurra/bespoke-logbook",
     "bugs": "https://github.com/joelpurra/bespoke-logbook/issues",
