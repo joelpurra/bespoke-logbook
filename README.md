@@ -2,6 +2,8 @@
 
 # [bespoke-logbook](https://github.com/joelpurra/bespoke-logbook)
 
+**Check out the [presentation/demo.](https://joelpurra.github.io/bespoke-logbook/demo/)**
+
 Log [bespoke.js][bespoke.js] events and state to the console
 
 The [default events][default-events] are logged by default, as are any custom events from plugins.
