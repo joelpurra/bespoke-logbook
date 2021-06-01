@@ -10,6 +10,12 @@ The [default events][default-events] are logged by default, as are any custom ev
 
 
 
+> ## ⚠️ This project has been archived
+>
+> No future updates are planned. Feel free to continue using it, but expect no support.
+
+
+
 ## Download
 
 Download the [production version][min] or the [development version][max], or use a [package manager](#package-managers).
